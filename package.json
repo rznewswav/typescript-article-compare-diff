@@ -1,0 +1,16 @@
+{
+  "name": "ts-fast-diff",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^18.0.0",
+    "dotenv": "^16.0.1",
+    "fast-diff": "^1.2.0",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  }
+}
