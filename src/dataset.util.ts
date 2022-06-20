@@ -9,8 +9,9 @@ export const files = readdirSync(datasetDir);
 export function useReadDataset<T>(fn: (s: string) => T) {
     return (fileName: string) => {
         const content = readFileSync(join(datasetDir, fileName)).toString('utf-8');
+        const fnSplit = fileName.split('/')
         return {
-            fileName,
+            fileName: fnSplit[fnSplit.length - 1],
             content: fn(content),
         };    
     }
