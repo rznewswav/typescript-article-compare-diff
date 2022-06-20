@@ -20,7 +20,7 @@ function diff(str1: string, str2: string) {
 export const [testFile, testPool] = sample(transformFeature);
 
 function computeDiffFactor(string1: ReturnType<typeof transformFeature>, string2: ReturnType<typeof transformFeature>) {
-    return diff(string1, string2) / string1.split(/\s/g).length
+    return Math.min(1, diff(string1, string2) / string1.split(/\s/g).length)
 }
 
 function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof testPool) {
