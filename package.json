@@ -12,6 +12,8 @@
     "word-diff": "^1.0.1"
   },
   "scripts": {
-    "start": "echo \"Char Diff\" && ts-node --files src/char-diff.ts; echo \"\"; echo \"Word Diff\" && ts-node --files src/word-diff.ts; echo \"\";"
+    "start": "echo \"Char Diff\" && ts-node --files src/char-diff.ts; echo \"\"; echo \"Word Diff\" && ts-node --files src/word-diff.ts; echo \"\";",
+    "chardiff": "ts-node --files src/char-diff.ts",
+    "worddiff": "ts-node --files src/word-diff.ts"
   }
 }

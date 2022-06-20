@@ -21,6 +21,12 @@ export function sum(a: number, b: number) {
 }
 
 export function sample<T>(transformFeature: (s: string) => T) {
-    const samples = files.map(useReadDataset(transformFeature));
-    return [samples.splice(~~(Math.random() * samples.length), 1)[0], samples] as const;
+    const [,,requestedFileName] = process.argv
+    const fileReaderMapper = useReadDataset(transformFeature)
+    const samples = files.map(fileReaderMapper);
+    if (requestedFileName) {
+        return [fileReaderMapper(join('..', requestedFileName)), samples.filter(e => !requestedFileName.includes(e.fileName))] as const;    
+    } else {
+        return [samples.splice(~~(Math.random() * samples.length), 1)[0], samples] as const;
+    }
 }
