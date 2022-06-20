@@ -1,6 +1,7 @@
 import diff from "fast-diff";
 import { sample, sum } from "./dataset.util";
 
+const startNow = performance.now();
 export function transformFeature(article: string) {
     return article.split(/\s/gi).map(e => e.trim().toLocaleLowerCase('en-gb')).filter(e => e.length).join('\n');
 }
@@ -19,3 +20,6 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
 }
 
 console.log(testFile.fileName, computeDatasetSimilarity(testFile, testPool).sort((a, b) => a.diffFactor - b.diffFactor))
+const endNow = performance.now()
+
+console.log(`Time taken: ${endNow - startNow}ms`)

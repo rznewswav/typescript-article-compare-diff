@@ -1,6 +1,7 @@
 import worddiff from 'word-diff';
 import { sample, sum } from "./dataset.util";
 
+const startNow = performance.now();
 function transformFeature(content: string) {
     return content.split(/\s/g).map(e => e.trim().toLocaleLowerCase('en-gb')).join(' ');
 }
@@ -31,3 +32,6 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
 }
 
 console.log(testFile.fileName, computeDatasetSimilarity(testFile, testPool).sort((a, b) => a.diffFactor - b.diffFactor))
+const endNow = performance.now()
+
+console.log(`Time taken: ${endNow - startNow}ms`)
