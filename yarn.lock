@@ -121,6 +121,11 @@ v8-compile-cache-lib@^3.0.1:
   resolved "https://registry.yarnpkg.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz#6336e8d71965cb3d35a1bbb7868445a7c05264bf"
   integrity sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==
 
+word-diff@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/word-diff/-/word-diff-1.0.1.tgz#a41eed2feb835ac807f2f3b24ff2f1a32276d9b4"
+  integrity sha512-kiYi6Bx4IGfaujLMzXh5smMp6vHxPnL530lYpP2CujcvA3Cp6OTaqmvFbanrDeLTaQX5BTT8JTBKWhRDiOAIyQ==
+
 yn@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
