@@ -32,7 +32,7 @@ function sum(a: number, b: number) {
 }
 
 function computeDiffFactor(string1: ReturnType<typeof transformFeature>, string2: ReturnType<typeof transformFeature>) {
-    return diff(string1, string2).filter(e => e[0] === diff.DELETE).map(([,score]) => Math.abs(score.length)).map(Number).reduce(sum) / Math.min(string1.length, string2.length)
+    return diff(string1, string2).filter(e => e[0] === diff.DELETE).map(([,chars]) => Math.abs(chars.length)).map(Number).reduce(sum, 0) / string1.length
 }
 
 function computeDatasetSimilarity(source: ReturnType<typeof readDataset>, datasetPool: Array<ReturnType<typeof readDataset>>) {
