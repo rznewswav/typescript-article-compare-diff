@@ -6,9 +6,9 @@ const nonAlphaNumericRegex = /[^a-z0-9]/gmi;
 const startNow = performance.now();
 function transformFeature(content: string) {
     const [headline, url, ...article] = content.split(/\n/g)
-    const [lang, ...title] = headline.toLocaleLowerCase('en-gb').split('-').map(e => e.trim()).filter(e => e.length)
-    const cleanTextArray = article.map(e => {
-        const tokenized = e.split(nonAlphaNumericRegex)
+    const [lang, ...title] = headline.split('-')
+    const cleanTextArray = article.map(e => e.trim()).filter(e => e.length).map(e => {
+        const tokenized = e.toLocaleLowerCase('en-gb').split(nonAlphaNumericRegex)
         return [tokenized.join(' '), tokenized.length] as const;
     })
     return [
