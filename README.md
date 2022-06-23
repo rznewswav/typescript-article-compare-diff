@@ -17,16 +17,6 @@ yarn
 npm run start
 ```
 
-**Run Diff Comparison by Character**
-
-```
-npm run chardiff
-
-# or by specific file
-
-npm run chardiff dataset/1mdb-en-1.txt 
-```
-
 **Run Diff Comparison by Word**
 
 ```
