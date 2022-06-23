@@ -27,3 +27,10 @@ npm run worddiff
 npm run worddiff dataset/1mdb-en-1.txt 
 ```
 
+---
+
+Optimization plan:
+
+- use different metrics to determine similarity
+- change words into their base form
+- map similar meaning words into same word
