@@ -2,17 +2,21 @@ import worddiff from 'word-diff';
 import { sample, sum } from "./dataset.util";
 import Papa from 'papaparse';
 
+const nonAlphaNumericRegex = /[^a-z0-9]/gmi;
 const startNow = performance.now();
 function transformFeature(content: string) {
     const [headline, url, ...article] = content.split(/\n/g)
-    const [lang, ...title] = headline.split('-')
-    const cleanTextArray = article.map(e => e.split(/\W/gmi).map(e => e.trim()).filter(e => e.length).join(' ').trim().toLocaleLowerCase('en-gb'))
+    const [lang, ...title] = headline.toLocaleLowerCase('en-gb').split('-').map(e => e.trim()).filter(e => e.length)
+    const cleanTextArray = article.map(e => {
+        const tokenized = e.split(nonAlphaNumericRegex)
+        return [tokenized.join(' '), tokenized.length] as const;
+    })
     return [
         lang.trim(),
         title.join('-').trim(),
         url,
-        cleanTextArray.join(' '),
-        cleanTextArray.length,
+        cleanTextArray.map(([e]) => e).join(' '),
+        cleanTextArray.map(([,e]) => e).reduce(sum, 0),
     ] as const;
 }
 
@@ -31,13 +35,13 @@ function diff(str1: string, str2: string, tokenSize1: number, tokenSize2: number
 export const [testFile, testPool] = sample(transformFeature);
 
 function computeDiffFactor([, , , string1, strlen1]: ReturnType<typeof transformFeature>, [, , , string2, strlen2]: ReturnType<typeof transformFeature>) {
-    return diff(string1, string2, strlen1, strlen2) / 2
+    return 1 - diff(string1, string2, strlen1, strlen2) / 2
 }
 
 function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof testPool) {
     return [
         {
-            contentDiffFactor: 0,
+            similarity: 100,
             // titleDiffFactor: 0,
             fileName: source.fileName,
             lang: source.content[0],
@@ -48,7 +52,7 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
         ...datasetPool.map(({ fileName, content: targetContent }) => {
             const [lang, title, url] = targetContent
             return ({
-                contentDiffFactor: computeDiffFactor(source.content, targetContent),
+                similarity: Math.round(computeDiffFactor(source.content, targetContent) * 10000) / 100,
                 // titleDiffFactor: computeDiffFactor(source.content[1], title),
                 fileName,
                 lang, title, url,
@@ -57,7 +61,7 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
         }),
     ]
 }
-const computation = computeDatasetSimilarity(testFile, testPool).sort((a, b) => a.contentDiffFactor - b.contentDiffFactor)
+const computation = computeDatasetSimilarity(testFile, testPool).sort((a, b) => b.similarity - a.similarity)
 const endNow = performance.now()
 const timeTaken = endNow - startNow
 const columns = [
