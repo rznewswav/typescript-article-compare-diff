@@ -6,20 +6,22 @@ const startNow = performance.now();
 function transformFeature(content: string) {
     const [headline, url, ...article] = content.split(/\n/g)
     const [lang, ...title] = headline.split('-')
+    const cleanTextArray = article.map(e => e.split(/\W/gmi).map(e => e.trim()).filter(e => e.length).join(' ').trim().toLocaleLowerCase('en-gb'))
     return [
         lang.trim(),
         title.join('-').trim(),
         url,
-        article.map(e => e.split(/\W/gmi).map(e => e.trim()).filter(e => e.length).join(' ').trim().toLocaleLowerCase('en-gb')).join(' ')
+        cleanTextArray.join(' '),
+        cleanTextArray.length,
     ] as const;
 }
 
-function diff(str1: string, str2: string) {
+function diff(str1: string, str2: string, tokenSize1: number, tokenSize2: number) {
     const wdiff = worddiff.diffString(str1, str2)
     return wdiff.map(d => {
         if ('remove' in d && 'add' in d) {
             const { remove = '', add = '' } = d
-            return remove.trim().split(' ').length / str1.split(/\s/g).length + add.trim().split(' ').length / str2.split(/\s/g).length
+            return remove.trim().split(' ').length / tokenSize1 + add.trim().split(' ').length / tokenSize2
         } else {
             return 0;
         }
@@ -28,28 +30,31 @@ function diff(str1: string, str2: string) {
 
 export const [testFile, testPool] = sample(transformFeature);
 
-function computeDiffFactor(string1: ReturnType<typeof transformFeature>[3], string2: ReturnType<typeof transformFeature>[3]) {
-    return diff(string1, string2) / 2
+function computeDiffFactor([, , , string1, strlen1]: ReturnType<typeof transformFeature>, [, , , string2, strlen2]: ReturnType<typeof transformFeature>) {
+    return diff(string1, string2, strlen1, strlen2) / 2
 }
 
 function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof testPool) {
     return [
         {
             contentDiffFactor: 0,
-            titleDiffFactor: 0,
+            // titleDiffFactor: 0,
             fileName: source.fileName,
             lang: source.content[0],
             title: source.content[1],
             url: source.content[2],
             source: source.fileName,
         },
-        ...datasetPool.map(({fileName, content: [lang, title, url, content]}) => ({
-            contentDiffFactor: computeDiffFactor(source.content[3], content),
-            titleDiffFactor: computeDiffFactor(source.content[1], title),
-            fileName,
-            lang, title, url,
-            source: source.fileName,
-        })),
+        ...datasetPool.map(({ fileName, content: targetContent }) => {
+            const [lang, title, url] = targetContent
+            return ({
+                contentDiffFactor: computeDiffFactor(source.content, targetContent),
+                // titleDiffFactor: computeDiffFactor(source.content[1], title),
+                fileName,
+                lang, title, url,
+                source: source.fileName,
+            });
+        }),
     ]
 }
 const computation = computeDatasetSimilarity(testFile, testPool).sort((a, b) => a.contentDiffFactor - b.contentDiffFactor)
