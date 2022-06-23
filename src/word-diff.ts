@@ -3,7 +3,14 @@ import { sample, sum } from "./dataset.util";
 
 const startNow = performance.now();
 function transformFeature(content: string) {
-    return content.split(/\s/g).map(e => e.trim().toLocaleLowerCase('en-gb')).join(' ');
+    const [headline, url, ...article] = content.split(/\n/g)
+    const [lang, ...title] = headline.split('-')
+    return [
+        lang.trim(),
+        title.join('-').trim(),
+        url,
+        article.map(e => e.split(/\W/gmi).map(e => e.trim()).filter(e => e.length).join(' ').trim().toLocaleLowerCase('en-gb')).join(' ')
+    ] as const;
 }
 
 function diff(str1: string, str2: string) {
@@ -20,14 +27,15 @@ function diff(str1: string, str2: string) {
 
 export const [testFile, testPool] = sample(transformFeature);
 
-function computeDiffFactor(string1: ReturnType<typeof transformFeature>, string2: ReturnType<typeof transformFeature>) {
+function computeDiffFactor(string1: ReturnType<typeof transformFeature>[3], string2: ReturnType<typeof transformFeature>[3]) {
     return Math.min(1, diff(string1, string2) / string1.split(/\s/g).length)
 }
 
 function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof testPool) {
-    return datasetPool.map(({fileName, content}) => ({
-        diffFactor: computeDiffFactor(source.content, content),
+    return datasetPool.map(({fileName, content: [lang, title, url, content]}) => ({
+        diffFactor: computeDiffFactor(source.content[3], content),
         fileName,
+        lang, title, url
     }))
 }
 
