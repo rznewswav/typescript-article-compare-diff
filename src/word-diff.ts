@@ -42,21 +42,23 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
     return [
         {
             similarity: 100,
-            // titleDiffFactor: 0,
-            fileName: source.fileName,
+            similarityLog10: 100,
+            source: source.fileName,
+            target: source.fileName,
             lang: source.content[0],
             title: source.content[1],
             url: source.content[2],
-            source: source.fileName,
         },
         ...datasetPool.map(({ fileName, content: targetContent }) => {
             const [lang, title, url] = targetContent
+            const similarity = Math.round(computeDiffFactor(source.content, targetContent) * 10000) / 100
+            const similarityLog10 = Math.round((similarity < 1 ? 0 : Math.log10(similarity) / 2) * 10000) / 100
             return ({
-                similarity: Math.round(computeDiffFactor(source.content, targetContent) * 10000) / 100,
-                // titleDiffFactor: computeDiffFactor(source.content[1], title),
-                fileName,
-                lang, title, url,
+                similarity,
+                similarityLog10,
                 source: source.fileName,
+                target: fileName,
+                lang, title, url,
             });
         }),
     ]
