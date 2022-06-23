@@ -1,0 +1,37 @@
+For one whole week, I’ve been using the ASUS Zenbook Pro 14 Duo OLED as my main laptop at work. At first, I wasn’t sold on the secondary touchscreen sitting above the keyboard, as it seemed unnecessary for a non-artist. 
+
+Seven days later, I definitely see its appeal. But before we get into that, let’s explore the specs for a bit. 
+
+The main monitor is a 2.8K OLED HDR touchscreen with a 16:10 aspect ratio, 120 Hz refresh rate, and 550 nits (unit of measurement for brightness). 
+
+Like the main monitor, the 12.7-inch ScreenPad has a 2.8K resolution and 120 Hz refresh rate.
+
+The laptop comes with an audio jack, one USB port, two Thunderbolt 4 ports, an HDMI port, and an SD card reader. It is equipped with an Intel Core i7-12700H processor and GeForce RTX 3050 Ti graphics card with NVIDIA Studio drivers. 
+
+
+Don’t be fooled by the image on the left, those are just vents, not USB ports
+One main difference between this new Zenbook model compared to its predecessor, the Zenbook Duo, is the elevated nature of the ScreenPad. The secondary screen is now raised by 12 degrees, providing comparatively better ergonomics for the user. 
+
+Other than the hardware, the software has received an upgrade too. The ScreenXpert 3 icon hovers around the sides of the ScreenPad. Upon clicking it, you can easily adjust the secondary screen’s brightness or access the App Navigator, amongst other features and settings. 
+
+Although I’ve never tried the Zenbook Duo or the Zenbook Pro Duo (different from the Zenbook Pro 14 Duo OLED, which is what I’m using right now), I know these features are rather sizable upgrades from the older models. But are the upgrades enough to make this dual-screened laptop worthwhile? 
+
+A matter of getting used to 
+Like most changes, switching over to the Zenbook Pro 14 Duo OLED took me a while to acclimatise. The off-centred keyboard was easier to get the hang of, but the touchpad off to the side was what threw me for a loop. It felt unnatural, so I ended up using a mouse for the majority of the week. 
+
+
+This laptop is around 1.7kg, which is lighter than I’m used to (to be fair, I have a pretty clunky laptop)
+In a pinch, though, the touchscreen doubles as a touchpad. I activated the touchpad mode with a three-finger tap so I can access the feature conveniently. Perhaps this might be useful for lefties too who aren’t comfortable with using the pad on the right side of the laptop. 
+
+To be fair, though, I do think the touchpad works well as an instrument for scrolling, but I’m not a big fan of it otherwise. 
+
+The front-mounted keyboard was also challenging, as I typically rest my wrists on my laptop. With the keyboard pushed all the way into the front of the laptop, I have to either keep my wrists mid-air or rest them on the table, which can result in cramps.
+
+On the bright side, I finally made use of the wrist rest gifted by my managing director (thanks, Sarah!). If you expect to use the Zenbook Pro Duo for long hours per day, I would definitely recommend looking into a wrist rest yourself. 
+
+
+Personally, a mouse is necessary for this laptop
+The keyboard being below the touchscreen also means that you can’t rest your wrists when using the screen. However, you can easily turn off the touchpad (with the help of F6) and rest your hand there instead.
+
+Multitaskers’ saviour, or demise?
+When I first dragged my messaging app down to the second screen, I realised the usefulness of it.
