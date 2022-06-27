@@ -1,5 +1,6 @@
 import worddiff from 'word-diff';
 import { sample, sum } from "./dataset.util";
+import { sample as prodSample, useProdSample, Transformer } from "./prod-dataset.util";
 import Papa from 'papaparse';
 
 const nonAlphaNumericRegex = /[^a-z0-9]/gmi;
@@ -20,6 +21,24 @@ function transformFeature(content: string) {
     ] as const;
 }
 
+const transformProdFeature: Transformer<ReturnType<typeof transformFeature>> = ({
+    uniqueId,
+    title,
+    html,
+}) => {
+    const cleanTextArray = html.split(/\n/g).map(e => e.trim()).filter(e => e.length).map(e => {
+        const tokenized = e.toLocaleLowerCase('en-gb').split(nonAlphaNumericRegex)
+        return [tokenized.join(' '), tokenized.length] as const;
+    })
+    return [
+        'en',
+        title,
+        `https://newswav.com/${uniqueId}`,
+        cleanTextArray.map(([e]) => e).join(' '),
+        cleanTextArray.map(([,e]) => e).reduce(sum, 0),
+    ] as const;
+}
+
 function diff(str1: string, str2: string, tokenSize1: number, tokenSize2: number) {
     const wdiff = worddiff.diffString(str1, str2)
     return wdiff.map(d => {
@@ -32,7 +51,7 @@ function diff(str1: string, str2: string, tokenSize1: number, tokenSize2: number
     }).reduce(sum, 0)
 }
 
-export const [testFile, testPool] = sample(transformFeature);
+export const [testFile, testPool] = useProdSample ? prodSample(transformProdFeature)  : sample(transformFeature);
 
 function computeDiffFactor([, , , string1, strlen1]: ReturnType<typeof transformFeature>, [, , , string2, strlen2]: ReturnType<typeof transformFeature>) {
     return 1 - diff(string1, string2, strlen1, strlen2) / 2
@@ -42,12 +61,12 @@ function computeDatasetSimilarity(source: typeof testFile, datasetPool: typeof t
     return [
         {
             similarity: 100,
-            similarityLog10: 100,
             source: source.fileName,
             target: source.fileName,
-            lang: source.content[0],
             title: source.content[1],
+            lang: source.content[0],
             url: source.content[2],
+            similarityLog10: 100,
         },
         ...datasetPool.map(({ fileName, content: targetContent }) => {
             const [lang, title, url] = targetContent
