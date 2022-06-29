@@ -7,8 +7,8 @@ import {
 } from "./prod-dataset.util";
 import Papa from "papaparse";
 
-const nonAlphaNumericRegex = /[^a-z0-9]/gim;
-const whitespaceRegex = /s+/gim;
+export const nonAlphaNumericRegex = /[^a-z0-9]/gim;
+export const whitespaceRegex = /s+/gim;
 const startNow = performance.now();
 function transformFeature(content: string) {
   const [headline, url, ...article] = content.split(/\n/g);
@@ -17,7 +17,7 @@ function transformFeature(content: string) {
     .map((e) => e.trim())
     .filter((e) => e.length)
     .map((e) => {
-      const tokenized = e.toLocaleLowerCase("en-gb").split(whitespaceRegex);
+      const tokenized = e.toLocaleLowerCase("en-gb").split(nonAlphaNumericRegex);
       return [tokenized.join(" "), tokenized.length] as const;
     });
   return [
@@ -29,15 +29,15 @@ function transformFeature(content: string) {
   ] as const;
 }
 
-const transformProdFeature: Transformer<
+export const transformProdFeature: Transformer<
   ReturnType<typeof transformFeature>
-> = ({ uniqueId, title, html }) => {
+> = ({ uniqueId, title, html, ...others }) => {
   const cleanTextArray = html
     .split(/\n/g)
     .map((e) => e.trim())
     .filter((e) => e.length)
     .map((e) => {
-      const tokenized = e.toLocaleLowerCase("en-gb").split(whitespaceRegex);
+      const tokenized = e.toLocaleLowerCase("en-gb").split(nonAlphaNumericRegex);
       return [tokenized.join(" "), tokenized.length] as const;
     });
   return [
@@ -82,7 +82,37 @@ function computeDiffFactor(
   return 1 - diff(string1, string2, strlen1, strlen2) / 2;
 }
 
-function computeDatasetSimilarity(
+
+async function diffAsync(
+  str1: string,
+  str2: string,
+  tokenSize1: number,
+  tokenSize2: number
+) {
+  const wdiff = worddiff.diffString(str1, str2);
+  return await Promise.all(wdiff
+    .map(async (d) => {
+      if ("remove" in d && "add" in d) {
+        const { remove = "", add = "" } = d;
+        return (
+          remove.trim().split(" ").length / tokenSize1 +
+          add.trim().split(" ").length / tokenSize2
+        );
+      } else {
+        return 0;
+      }
+    })
+  ).then(e => e.reduce(sum, 0));
+}
+
+async function computeDiffFactorAsync(
+  [, , , string1, strlen1]: ReturnType<typeof transformFeature>,
+  [, , , string2, strlen2]: ReturnType<typeof transformFeature>
+) {
+  return 1 - await diffAsync(string1, string2, strlen1, strlen2) / 2;
+}
+
+export function computeDatasetSimilarity(
   source: typeof testFile,
   datasetPool: typeof testPool
 ) {
@@ -114,6 +144,41 @@ function computeDatasetSimilarity(
         url,
       };
     }),
+  ];
+}
+
+export async function computeDatasetSimilarityAsync(
+  source: typeof testFile,
+  datasetPool: typeof testPool
+) {
+  return [
+    {
+      similarity: 100,
+      source: source.fileName,
+      target: source.fileName,
+      title: source.content[1],
+      lang: source.content[0],
+      url: source.content[2],
+      similarityLog10: 100,
+    },
+    ...(await Promise.all(datasetPool.map(async ({ fileName, content: targetContent }) => {
+      const [lang, title, url] = targetContent;
+      const similarity =
+        Math.round(await computeDiffFactorAsync(source.content, targetContent) * 10000) /
+        100;
+      const similarityLog10 =
+        Math.round((similarity < 1 ? 0 : Math.log10(similarity) / 2) * 10000) /
+        100;
+      return {
+        similarity,
+        similarityLog10,
+        source: source.fileName,
+        target: fileName,
+        lang,
+        title,
+        url,
+      };
+    }))),
   ];
 }
 
