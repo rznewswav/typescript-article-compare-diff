@@ -4,12 +4,13 @@ import { sample as prodSample, useProdSample, Transformer } from "./prod-dataset
 import Papa from 'papaparse';
 
 const nonAlphaNumericRegex = /[^a-z0-9]/gmi;
+const whitespaceRegex = /s+/gmi;
 const startNow = performance.now();
 function transformFeature(content: string) {
     const [headline, url, ...article] = content.split(/\n/g)
     const [lang, ...title] = headline.split('-')
     const cleanTextArray = article.map(e => e.trim()).filter(e => e.length).map(e => {
-        const tokenized = e.toLocaleLowerCase('en-gb').split(nonAlphaNumericRegex)
+        const tokenized = e.toLocaleLowerCase('en-gb').split(whitespaceRegex)
         return [tokenized.join(' '), tokenized.length] as const;
     })
     return [
@@ -27,7 +28,7 @@ const transformProdFeature: Transformer<ReturnType<typeof transformFeature>> = (
     html,
 }) => {
     const cleanTextArray = html.split(/\n/g).map(e => e.trim()).filter(e => e.length).map(e => {
-        const tokenized = e.toLocaleLowerCase('en-gb').split(nonAlphaNumericRegex)
+        const tokenized = e.toLocaleLowerCase('en-gb').split(whitespaceRegex)
         return [tokenized.join(' '), tokenized.length] as const;
     })
     return [
