@@ -1,9 +1,8 @@
 import { sample as prodSample, useProdSample } from "./prod-dataset.util";
 import {
   computeDatasetSimilarityAsync,
-  nonAlphaNumericRegex,
+  lineTransformer,
   transformProdFeature,
-  whitespaceRegex,
 } from "./word-diff";
 import yaml from "yaml";
 import { readFileSync } from "fs";
@@ -36,9 +35,7 @@ const testFiles: typeof _testFile[] = testYaml.map((e) => {
     .map((e) => e.trim())
     .filter((e) => e.length)
     .map((e) => {
-      const tokenized = e
-        .toLocaleLowerCase("en-gb")
-        .split(nonAlphaNumericRegex);
+      const tokenized = lineTransformer(e);
       return [tokenized.join(" "), tokenized.length] as const;
     });
   return {
